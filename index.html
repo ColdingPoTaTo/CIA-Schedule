@@ -181,14 +181,11 @@
         });
       });
       function init() {
-        //get current day by new Date().getDay()
         const currDay = new Date().getDay();
         console.log("check point currDay", currDay);
         const validDay = ["SUN", "MOM", "TUE", "WED", "THU", "FRI", "SAT"];
-        //set #selectday value to current day, if current day is sunday or saturday, set to monday
         $("#selectday").val(validDay[currDay] === "SUN" || validDay[currDay] === "SAT" ? "MOM" : validDay[currDay]);
         renderSchedule();
-        //#set thedate to current date
         $("#thedate").text(new Date().toLocaleDateString());
       }
       function renderSchedule() {
@@ -200,11 +197,9 @@
         tbody.empty();
         const scheduleContents = [];
         myLesson.forEach((lesson, index) => {
-          //解構lesson
           const { subject, teacher, room, periodNo, book, people } = lesson;
           const { begin, end } = periodTime[index];
           console.log("check point periodTime[index]", periodTime[index]);
-          //trBgColor: 1=green, >1 = orange, 0 = no color
           const trBgColor = people === 1 ? "table-success" : people > 1 ? "table-warning" : "";
           scheduleContents.push(`
                 <tr class="${trBgColor}">
