@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" crossorigin="anonymous"></script> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class="d-flex align-items-center">
+      <div><span class="me-1">Today:</span><span id="thedate"></span></div>
+      <div class="ms-auto d-flex align-items-center">
+        <label for="selectday" class="me-1 my-0">Select Day:</label>
+        <select name="day" id="selectday" class="form-select w-auto">
+          <option value="MOM">Monday</option>
+          <option value="TUE">Tuesday</option>
+          <option value="WED">Wednesday</option>
+          <option value="THU">Thursday</option>
+          <option value="FRI">Friday</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Period</th>
+            <th>Time</th>
+            <th>Subject</th>
+            <th>Teacher</th>
+            <th>Room</th>
+            <th>Book</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <script>
+      class Lesson {
+        constructor(subject, teacher, room, periodNo, book, people = 0) {
+          this.subject = subject;
+          this.teacher = teacher;
+          this.room = room;
+          this.periodNo = periodNo;
+          this.book = book;
+          this.people = people;
+        }
+      }
+      const Period = {
+        A: {
+          0: {
+            begin: "07:00",
+            end: "07:45",
+          },
+          1: {
+            begin: "08:00",
+            end: "08:45",
+          },
+          2: {
+            begin: "08:50",
+            end: "09:35",
+          },
+          3: {
+            begin: "09:40",
+            end: "10:25",
+          },
+          4: {
+            begin: "10:30",
+            end: "11:15",
+          },
+          5: {
+            begin: "11:20",
+            end: "12:05",
+          },
+          6: {
+            begin: "13:05",
+            end: "13:50",
+          },
+          7: {
+            begin: "13:55",
+            end: "14:40",
+          },
+          8: {
+            begin: "14:45",
+            end: "15:30",
+          },
+          9: {
+            begin: "15:35",
+            end: "16:20",
+          },
+          10: {
+            begin: "16:25",
+            end: "17:10",
+          },
+          11: {
+            begin: "17:15",
+            end: "18:00",
+          },
+        },
+        B: {
+          0: {
+            begin: "07:00",
+            end: "07:45",
+          },
+          1: {
+            begin: "08:00",
+            end: "08:40",
+          },
+
+          2: {
+            begin: "08:45",
+            end: "09:25",
+          },
+          3: {
+            begin: "09:30",
+            end: "10:10",
+          },
+          4: {
+            begin: "10:15",
+            end: "10:55",
+          },
+          5: {
+            begin: "11:00",
+            end: "11:40",
+          },
+          6: {
+            begin: "11:45",
+            end: "12:25",
+          },
+          7: {
+            begin: "13:30",
+            end: "14:10",
+          },
+          8: {
+            begin: "14:15",
+            end: "14:55",
+          },
+          9: {
+            begin: "15:00",
+            end: "15:40",
+          },
+          10: {
+            begin: "15:45",
+            end: "16:25",
+          },
+          11: {
+            begin: "16:30",
+            end: "17:10",
+          },
+        },
+      };
+      const Daymap = {
+        MOM: "A",
+        TUE: "A",
+        WED: "A",
+        THU: "A",
+        FRI: "B",
+      };
+      const myLesson = [
+        new Lesson("", "", "", 0, ""),
+        new Lesson("EVERYDAY IDIOMS (Book1 Part2) L3-UP", "CAMS", "Room 101", 1, "Math book", 4),
+        new Lesson("SELF STUDY ROOM", "SELF STUDY ROOM", "LIBRARY55", 2, "SELF STUDY ROOM"),
+        new Lesson("(KET PREP 2)", "T.RYANNA", "M176(1F)", 3, "EMPOWER KEY - SSW CHECKER", 1),
+        new Lesson("SELF-WRITING", "SELF-WRITING", "LIBRARY149", 4, "SELF-WRITING"),
+        new Lesson("WORLD NEWS L3-UP", "XI-JOHN", "CNN(2F)", 5, "WORLD NEWS L3-UP", 4),
+        new Lesson("TOUCHSTONE 2 L3-L4", "RYM", "GC13(2F)", 6, "TOUCHSTONE 2 L3-L4", 4),
+        new Lesson("", "", "", 7, ""),
+        new Lesson("(R3)", "T.CHESCA", "M224(2F)", 8, "READING 3", 1),
+        new Lesson("NCE INTERMEDIATE L4-L6", "JOHN", "GC03(2F)", 9, "NCE INTERMEDIATE L4-L6", 4),
+        new Lesson("(KET PREP 1)", "T.JASMINE", "M216(1F)", 10, "OBJECTIVE KEY", 1),
+        new Lesson("(S3)", "T.AL", "M205(1F)", 11, "SPEAKING 3", 1),
+      ];
+      $(document).ready(function () {
+        init();
+        $("#selectday").on("change", function () {
+          renderSchedule();
+        });
+      });
+      function init() {
+        //get current day by new Date().getDay()
+        const currDay = new Date().getDay();
+        console.log("check point currDay", currDay);
+        const validDay = ["SUN", "MOM", "TUE", "WED", "THU", "FRI", "SAT"];
+        //set #selectday value to current day, if current day is sunday or saturday, set to monday
+        $("#selectday").val(validDay[currDay] === "SUN" || validDay[currDay] === "SAT" ? "MOM" : validDay[currDay]);
+        renderSchedule();
+        //#set thedate to current date
+        $("#thedate").text(new Date().toLocaleDateString());
+      }
+      function renderSchedule() {
+        const selectedDay = $("#selectday").val();
+        const dayType = Daymap[selectedDay];
+        const periodTime = Period[dayType];
+
+        const tbody = $("tbody");
+        tbody.empty();
+        const scheduleContents = [];
+        myLesson.forEach((lesson, index) => {
+          //解構lesson
+          const { subject, teacher, room, periodNo, book, people } = lesson;
+          const { begin, end } = periodTime[index];
+          console.log("check point periodTime[index]", periodTime[index]);
+          //trBgColor: 1=green, >1 = orange, 0 = no color
+          const trBgColor = people === 1 ? "table-success" : people > 1 ? "table-warning" : "";
+          scheduleContents.push(`
+                <tr class="${trBgColor}">
+                <td>${periodNo}</td>
+                <td>${begin} - ${end}</td>
+                <td>${subject == "" ? "FREE" : subject}</td>
+                <td>${teacher}</td>
+                <td>${room == "" ? "FREE" : room}</td>
+                <td>${book}</td>
+                </tr>
+            `);
+        });
+        tbody.html(scheduleContents.join(""));
+      }
+    </script>
+  </body>
+</html>
