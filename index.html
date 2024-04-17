@@ -15,7 +15,7 @@
       * {
         font-size: 0.8rem;
       }
-      .gaparea {
+      .gaparea-30vh {
         margin-bottom: 30vh;
       }
     </style>
@@ -38,6 +38,7 @@
       <div class="">
         <button id="btngap" class="badge rounded-pill text-bg-secondary">展開/收起</button>
       </div>
+      <div class="gaparea"></div>
 
       <div class="my-2">
         <table class="table table-bordered text-center">
@@ -54,6 +55,7 @@
           <tbody class="align-middle"></tbody>
         </table>
       </div>
+      <div class="gaparea"></div>
     </div>
 
     <script>
@@ -197,11 +199,11 @@
           renderSchedule();
         });
         $("#btngap").on("click", function () {
-          const isOpen = $(this).parent().hasClass("gaparea");
+          const isOpen = $(".gaparea").hasClass("gaparea-30vh");
           if (isOpen) {
-            $(this).parent().removeClass("gaparea");
+            $(".gaparea").removeClass("gaparea-30vh");
           } else {
-            $(this).parent().addClass("gaparea");
+            $(".gaparea").addClass("gaparea-30vh");
           }
         });
       });
