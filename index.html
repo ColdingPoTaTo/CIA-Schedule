@@ -10,10 +10,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" crossorigin="anonymous"></script>
     <style>
       :root {
-        --bg-bg1-color: white;
-        --bg-bg2-color: white;
-        --bg-m2m-color: white;
-        --bg-gc-color: white;
+        --bg-bg1-color: #f2f2fc;
+        --bg-bg2-color: #fcf2f2;
+        --bg-m2m-color: #e8fcf3;
+        --bg-gc-color: #fff3cd;
+      }
+      .table {
+        --bs-table-bg: #ffffff00;
       }
       .table > :not(caption) > * > * {
         padding: 0.1rem;
@@ -24,8 +27,8 @@
       .gaparea-30vh {
         margin-bottom: 30vh;
       }
-      tr.bg-bg1 {
-        background-color: var(--bg-bg1-color) !important;
+      .bg-bg1 {
+        background-color: var(--bg-bg1-color);
       }
       .bg-bg2 {
         background-color: var(--bg-bg2-color);
@@ -36,10 +39,13 @@
       .bg-gc {
         background-color: var(--bg-gc-color);
       }
+      .bg-white {
+        background-color: white;
+      }
     </style>
   </head>
   <body>
-    <div class="container">
+    <div class="container pb-5">
       <div class="d-flex align-items-center mt-2">
         <div><img src="./img/cia_just_logo.png" alt="" height="30" /></div>
         <div><span class="me-1">Today:</span><span id="thedate"></span></div>
@@ -56,13 +62,13 @@
       </div>
       <div class="d-flex gap-1" id="colorPicker">
         <div class="col d-flex align-items-center flex-column flex-sm-row">
-          <span>Mom~Thu: </span><input type="color" value="#e6f2ff" id="colorBg1" />
+          <span>Mom~Thu: </span><input type="color" value="#f2f2fc" id="colorBg1" />
         </div>
         <div class="col d-flex align-items-center flex-column flex-sm-row">
-          <span>Fri: </span><input type="color" value="#ffe6e6" id="colorBg2" />
+          <span>Fri: </span><input type="color" value="#fcf2f2" id="colorBg2" />
         </div>
         <div class="col d-flex align-items-center flex-column flex-sm-row">
-          <span>M2M: </span><input type="color" value="#d1e7dd" id="colorM2m" />
+          <span>M2M: </span><input type="color" value="#e8fcf3" id="colorM2m" />
         </div>
         <div class="col d-flex align-items-center flex-column flex-sm-row">
           <span>GC: </span><input type="color" value="#fff3cd" id="colorGc" />
@@ -76,7 +82,7 @@
       <div class="my-2">
         <table class="table table-bordered text-center">
           <thead>
-            <tr>
+            <tr class="bg-white">
               <th>P</th>
               <th>Time</th>
               <th>Subject</th>
@@ -273,15 +279,29 @@
       function renderSchedule() {
         const selectedDay = $("#selectday").val();
         const dayType = Daymap[selectedDay];
+        console.log("daytype:", dayType);
         const periodTime = Period[dayType];
 
         const tbody = $("tbody");
         tbody.empty();
+
+        containerBgColor = dayType === "A" ? "bg-bg1" : "bg-bg2";
+        $(".container").removeClass("bg-bg1").removeClass("bg-bg2").addClass(containerBgColor);
+
         const scheduleContents = [];
         myLesson.forEach((lesson, index) => {
           const { subject, teacher, room, periodNo, book, people } = lesson;
           const { begin, end } = periodTime[index];
-          const trBgColor = people === 1 ? "table-success bg-m2m" : people > 1 ? "table-warning bg-m2m" : "bg-bg1";
+          let trBgColor = dayType === "A" ? "bg-bg1" : "bg-bg2";
+          if (people === 1) {
+            trBgColor = "bg-m2m";
+          } else if (people > 1) {
+            trBgColor = "bg-gc";
+          } else {
+            trBgColor = "bg-white";
+          }
+
+          //const trBgColor = people === 1 ? "*table-success bg-m2m" : people > 1 ? "*table-warning bg-m2m" : "bg-bg1";
           scheduleContents.push(`
                 <tr class="${trBgColor}">
                 <td>${periodNo}</td>
